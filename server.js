@@ -11,6 +11,11 @@ app.get('/', (req, res) => {
   res.send('<img src="/image/eend.gif" width="150">Hello Worlds!')
 })
 
+app.get('/:user/index.html', (req, res) => {
+  console.log(`Input from ${req.params.user}`)
+  res.send(`<img src="/image/eend.gif" width="150">Hello ${req.params.user}!`)
+})
+
 app.use((req, res, next) => {
   console.log('404 error at URL: ' + req.url)
   res.status(404).render('not_found.ejs', {url: req.url})
