@@ -52,7 +52,7 @@ app.get('/home/:user/', (req, res) => {
 
 app.post('/welkom', upload.single('avatar'), (req, res) => {
   const hash = bcrypt.hashSync(req.body.password, saltRounds)
-  res.render('welkomimg.ejs', {
+  res.render('welkom.ejs', {
     userName: req.body.name,
     userMail: req.body.email,
     hashedPass: hash,
@@ -65,7 +65,7 @@ app.post('/enter', (req, res) => {
     if (err) { console.log('Database error: ' + err) }
     if (data[0]) {
       if (bcrypt.compareSync(req.body.password, data[0].pwhash)) {
-        res.render('welkomimg.ejs', {
+        res.render('welkom.ejs', {
           userName: data[0].name,
           userMail: data[0].email,
           userPass: data[0].pwhash,
