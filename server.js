@@ -13,6 +13,9 @@ const storage = multer.diskStorage({
 })
 const upload = multer({ storage: storage })
 
+const bcrypt = require('bcrypt')
+const saltRounds = 10
+
 const fileExtension = (mimeType) => {
   if (mimeType == 'image/gif') { return '.gif'}
   if (mimeType == 'image/jpeg') { return '.jpg'}
@@ -38,20 +41,22 @@ app.get('/home/:user/', (req, res) => {
 })
 
 app.post('/welkom', (req, res) => {
+  const hash = bcrypt.hashSync(req.body.password, saltRounds);
   res.render('welkom.ejs', {
     userName: req.body.name,
     userMail: req.body.email,
-    userPass: req.body.password
+    userPass: req.body.password,
+    hashedPass: hash
   })
 })
 
 app.post('/welkomimg', upload.single('avatar'), (req, res) => {
-  console.log(req.file)
+  // console.log(req.file)
   res.render('welkomimg.ejs', {
     userName: req.body.name,
     userMail: req.body.email,
     userPass: req.body.password,
-    imgURL:   req.file.filename
+    imgURL: req.file.filename
   })
 })
 
