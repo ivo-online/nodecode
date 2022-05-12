@@ -1,4 +1,5 @@
 require('dotenv').config()
+
 const express = require('express')
 const app = express()
 
@@ -22,6 +23,14 @@ const fileExtension = (mimeType) => {
   if (mimeType === 'image/png') { return '.png' }
   return ''
 }
+
+const { MongoClient, ServerApiVersion } = require('mongodb')
+const uri = "mongodb+srv://" + process.env.DB_USERNAME + ":" + process.env.DB_PASS + "@" + process.env.DB_HOST + "/" + process.env.DB_NAME + "?retryWrites=true&w=majority"
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 })
+client.connect(err => {
+  if(err) { throw err }
+  //client.close();
+});
 
 app
   .use(express.static('static'))
@@ -59,6 +68,29 @@ app.post('/welkomimg', upload.single('avatar'), (req, res) => {
     hashedPass: hash,
     imgURL: req.file.filename
   })
+})
+
+app.post('/enter', (req, res) => {
+  const done = (err, data) => { 
+    if(err) { console.log("Database error: " + err) }
+    if( data[0] ) {
+      res.render('welkomimg.ejs', {
+        userName: data[0].name,
+        userMail: data[0].email,
+        userPass: data[0].hash,
+        hashedPass: data[0].hash,
+        imgURL: data[0].avatar
+      })
+    } else {
+      res.send('Unknown user')
+    }
+  }
+
+  const hash = bcrypt.hashSync(req.body.password, saltRounds)
+  
+  const collection = client.db(process.env.DB_NAME).collection("users")
+  const findResult = collection.find({ name: req.body.name }).toArray(done)
+
 })
 
 app.use((req, res, next) => {
