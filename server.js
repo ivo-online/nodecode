@@ -83,10 +83,10 @@ app.post('/enter', (req, res) => {
           imgURL: data[0].avatar
         })
       } else {
-        res.send('** Intruder alert **')
+        res.send('** Intruder alert **') // incorrect password
       }
     } else {
-      res.send('Unknown user')
+      res.send('Unknown user') //username not found in database
     }
   }
 
