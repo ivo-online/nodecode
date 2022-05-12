@@ -49,22 +49,12 @@ app.get('/home/:user/', (req, res) => {
   res.send(`<img src="/image/eend.gif" width="150">Hello ${req.params.user}!`)
 })
 
-app.post('/welkom', (req, res) => {
-  const hash = bcrypt.hashSync(req.body.password, saltRounds)
-  res.render('welkom.ejs', {
-    userName: req.body.name,
-    userMail: req.body.email,
-    userPass: req.body.password,
-    hashedPass: hash
-  })
-})
 
-app.post('/welkomimg', upload.single('avatar'), (req, res) => {
+app.post('/welkom', upload.single('avatar'), (req, res) => {
   const hash = bcrypt.hashSync(req.body.password, saltRounds)
   res.render('welkomimg.ejs', {
     userName: req.body.name,
     userMail: req.body.email,
-    userPass: req.body.password,
     hashedPass: hash,
     imgURL: req.file.filename
   })
