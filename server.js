@@ -1,4 +1,6 @@
-const port = 3000
+require('dotenv').config()
+console.log(process.env.DB_HOST)
+
 const express = require('express')
 const app = express()
 
@@ -8,7 +10,7 @@ const storage = multer.diskStorage({
     cb(null, 'uploads/')
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + fileExtension(file.mimetype)) //Appending extension
+    cb(null, Date.now() + fileExtension(file.mimetype)) // Appending extension
   }
 })
 const upload = multer({ storage: storage })
@@ -17,9 +19,9 @@ const bcrypt = require('bcrypt')
 const saltRounds = 10
 
 const fileExtension = (mimeType) => {
-  if (mimeType == 'image/gif') { return '.gif'}
-  if (mimeType == 'image/jpeg') { return '.jpg'}
-  if (mimeType == 'image/png') { return '.png'}
+  if (mimeType === 'image/gif') { return '.gif' }
+  if (mimeType === 'image/jpeg') { return '.jpg' }
+  if (mimeType === 'image/png') { return '.png' }
   return ''
 }
 
@@ -41,7 +43,7 @@ app.get('/home/:user/', (req, res) => {
 })
 
 app.post('/welkom', (req, res) => {
-  const hash = bcrypt.hashSync(req.body.password, saltRounds);
+  const hash = bcrypt.hashSync(req.body.password, saltRounds)
   res.render('welkom.ejs', {
     userName: req.body.name,
     userMail: req.body.email,
@@ -65,6 +67,6 @@ app.use((req, res, next) => {
   res.status(404).render('not_found.ejs', { url: req.url })
 })
 
-app.listen(port, () => {
-  console.log(`Webserver listening on port ${port}`)
+app.listen(process.env.SERVER_PORT, () => {
+  console.log(`Shaking it up on port ${process.env.SERVER_PORT}`)
 })
