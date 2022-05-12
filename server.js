@@ -51,13 +51,29 @@ app.get('/home/:user/', (req, res) => {
 
 
 app.post('/welkom', upload.single('avatar'), (req, res) => {
+  const done = (err, data) => {
+    if (err) { console.log('Database error: ' + err) }
+    if (data[0]) {
+      res.send('User already exists') // already present in database
+    } else {
+      collection.insertOne({
+        name: req.body.name,
+        pwhash: hash,
+        email: req.body.email,
+        avatar: req.file.filename
+      })
+      res.render('welkom.ejs', {
+        userName: req.body.name,
+        userMail: req.body.email,
+        hashedPass: hash,
+        imgURL: req.file.filename
+      })
+    }
+  }
+
   const hash = bcrypt.hashSync(req.body.password, saltRounds)
-  res.render('welkom.ejs', {
-    userName: req.body.name,
-    userMail: req.body.email,
-    hashedPass: hash,
-    imgURL: req.file.filename
-  })
+  const collection = client.db(process.env.DB_NAME).collection('users')
+  collection.find({ name: req.body.name }).toArray(done)
 })
 
 app.post('/enter', (req, res) => {
