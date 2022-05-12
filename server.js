@@ -25,12 +25,12 @@ const fileExtension = (mimeType) => {
 }
 
 const { MongoClient, ServerApiVersion } = require('mongodb')
-const uri = "mongodb+srv://" + process.env.DB_USERNAME + ":" + process.env.DB_PASS + "@" + process.env.DB_HOST + "/" + process.env.DB_NAME + "?retryWrites=true&w=majority"
+const uri = 'mongodb+srv://' + process.env.DB_USERNAME + ':' + process.env.DB_PASS + '@' + process.env.DB_HOST + '/' + process.env.DB_NAME + '?retryWrites=true&w=majority'
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 })
 client.connect(err => {
-  if(err) { throw err }
-  //client.close();
-});
+  if (err) { throw err }
+  // client.close()
+})
 
 app
   .use(express.static('static'))
@@ -71,10 +71,10 @@ app.post('/welkomimg', upload.single('avatar'), (req, res) => {
 })
 
 app.post('/enter', (req, res) => {
-  const done = (err, data) => { 
-    if(err) { console.log("Database error: " + err) }
-    if( data[0] ) {
-      if( bcrypt.compareSync(req.body.password, data[0].pwhash) ) {
+  const done = (err, data) => {
+    if (err) { console.log('Database error: ' + err) }
+    if (data[0]) {
+      if (bcrypt.compareSync(req.body.password, data[0].pwhash)) {
         res.render('welkomimg.ejs', {
           userName: data[0].name,
           userMail: data[0].email,
@@ -86,15 +86,12 @@ app.post('/enter', (req, res) => {
         res.send('** Intruder alert **') // incorrect password
       }
     } else {
-      res.send('Unknown user') //username not found in database
+      res.send('Unknown user') // username not found in database
     }
   }
 
-  const hash = bcrypt.hashSync(req.body.password, saltRounds)
-  
-  const collection = client.db(process.env.DB_NAME).collection("users")
-  const findResult = collection.find({ name: req.body.name }).toArray(done)
-
+  const collection = client.db(process.env.DB_NAME).collection('users')
+  collection.find({ name: req.body.name }).toArray(done)
 })
 
 app.use((req, res, next) => {
