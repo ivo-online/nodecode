@@ -51,11 +51,12 @@ app.post('/welkom', (req, res) => {
 })
 
 app.post('/welkomimg', upload.single('avatar'), (req, res) => {
-  // console.log(req.file)
+  const hash = bcrypt.hashSync(req.body.password, saltRounds)
   res.render('welkomimg.ejs', {
     userName: req.body.name,
     userMail: req.body.email,
     userPass: req.body.password,
+    hashedPass: hash,
     imgURL: req.file.filename
   })
 })
