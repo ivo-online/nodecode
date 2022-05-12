@@ -74,13 +74,17 @@ app.post('/enter', (req, res) => {
   const done = (err, data) => { 
     if(err) { console.log("Database error: " + err) }
     if( data[0] ) {
-      res.render('welkomimg.ejs', {
-        userName: data[0].name,
-        userMail: data[0].email,
-        userPass: data[0].hash,
-        hashedPass: data[0].hash,
-        imgURL: data[0].avatar
-      })
+      if( bcrypt.compareSync(req.body.password, data[0].pwhash) ) {
+        res.render('welkomimg.ejs', {
+          userName: data[0].name,
+          userMail: data[0].email,
+          userPass: data[0].pwhash,
+          hashedPass: data[0].pwhash,
+          imgURL: data[0].avatar
+        })
+      } else {
+        res.send('** Intruder alert **')
+      }
     } else {
       res.send('Unknown user')
     }
