@@ -1,4 +1,6 @@
 node_modules/
+# we need an empty directory uploads, so one hidden file is included there
 uploads/*
+!uploads/.placeholder
 .env
 .eslintrc.json
