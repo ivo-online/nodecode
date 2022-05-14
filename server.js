@@ -49,7 +49,6 @@ app.get('/home/:user/', (req, res) => {
   res.send(`<img src="/image/eend.gif" width="150">Hello ${req.params.user}!`)
 })
 
-
 app.post('/welkom', upload.single('avatar'), (req, res) => {
   const done = (err, data) => {
     if (err) { console.log('Database error: ' + err) }
@@ -84,7 +83,6 @@ app.post('/enter', (req, res) => {
         res.render('welkom.ejs', {
           userName: data[0].name,
           userMail: data[0].email,
-          userPass: data[0].pwhash,
           hashedPass: data[0].pwhash,
           imgURL: data[0].avatar
         })
@@ -105,6 +103,6 @@ app.use((req, res, next) => {
   res.status(404).render('not_found.ejs', { url: req.url })
 })
 
-app.listen(process.env.SERVER_PORT, () => {
-  console.log(`Shaking it up on port ${process.env.SERVER_PORT}`)
+app.listen(process.env.PORT, () => {
+  console.log(`Shaking it up on port ${process.env.PORT}`)
 })
